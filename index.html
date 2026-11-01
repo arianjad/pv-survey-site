@@ -47,6 +47,7 @@ dialog dl{display:grid;grid-template-columns:max-content 1fr;gap:3px 12px;margin
 dialog dt{color:var(--mut)}dialog dd{margin:0;overflow-wrap:anywhere}
 dialog a{color:var(--acc)}
 #selbar{display:none;padding:4px 16px;font-size:13px}
+.viewbar{gap:6px 10px;padding:6px 16px;border-bottom:0;background:var(--head);border-top:1px solid var(--line)}
 dialog .controls{padding:4px 0;border:0}dialog h3{font-size:14px;margin:14px 0 0}.hint{font-size:11px;color:var(--mut)}
 /* layout: phone/tablet stacked (default); >=1000px sidebar + viewport-filling main; >=1800px plot beside table */
 .plotpane{height:clamp(300px,55vh,520px)}
@@ -62,15 +63,16 @@ tr:hover td:first-child{background:var(--head)}
  .controls>*{grid-column:1/-1}
  .controls>label:has(.num),.controls>button{grid-column:auto}
  #q{width:100%}
- main{display:grid;grid-template-rows:auto auto auto minmax(0,1fr);min-width:0;min-height:0}
- #count{grid-row:1;padding:8px 16px 4px}#selbar{grid-row:2}
- .plotpane{grid-row:3;height:42vh;min-height:220px;resize:vertical;overflow:hidden;border-bottom:1px solid var(--line)}
- .wrap{grid-row:4;max-height:none;border-top:0}
+ main{display:grid;grid-template-rows:auto auto auto auto minmax(0,1fr);min-width:0;min-height:0}
+ #count{grid-row:1;padding:8px 16px 4px}#selbar{grid-row:2}.viewbar{grid-row:3}
+ .plotpane{grid-row:4;height:42vh;min-height:220px;resize:vertical;overflow:hidden;border-bottom:1px solid var(--line)}
+ .wrap{grid-row:5;max-height:none;border-top:0}
 }
 @media (min-width:1800px){
- main{grid-template-columns:minmax(0,2fr) minmax(0,3fr);grid-template-rows:auto auto minmax(0,1fr)}
+ main{grid-template-columns:minmax(0,2fr) minmax(0,3fr);grid-template-rows:auto auto auto minmax(0,1fr)}
  #count,#selbar{grid-column:1/-1}
- .plotpane,.wrap{grid-row:3}
+ .viewbar{grid-row:3;grid-column:1;border-right:1px solid var(--line)}
+ .plotpane{grid-row:4;grid-column:1}.wrap{grid-row:3/5;grid-column:2}
  .plotpane{height:auto;min-height:0;resize:none;border-bottom:0;border-right:1px solid var(--line)}
 }
 </style>
@@ -98,18 +100,21 @@ Ground states in <span class="conj">grey italics with ?</span> are estimates by 
 <label>hf/2B max<input id="r1" class="num" type="number" step="1" value="20"></label>
 <label>|gap| max (GHz)<input id="g1" class="num" type="number" step="0.5" placeholder="any"></label>
 <div class="checks"><label><input type="checkbox" id="asif">as-if-Σ only</label><label><input type="checkbox" id="norad">hide radioactive</label><label title="per molecule, the isotopologue with the smallest |gap| among the rows that pass the other filters"><input type="checkbox" id="one" checked>one isotopologue per molecule</label></div>
+<button id="reset">Reset filters</button>
+</div>
+</aside>
+<main>
+<div id="count"></div>
+<div class="controls viewbar">
 <label>2B axis<select id="xs" class="num"><option>log</option><option>linear</option></select></label>
 <label>hf axis<select id="ys" class="num"><option>log</option><option>linear</option></select></label>
 <label>2B min (GHz)<input id="x0" class="num" type="number" step="any" placeholder="auto"></label>
 <label>2B max (GHz)<input id="x1" class="num" type="number" step="any" placeholder="auto"></label>
 <label>hf min (GHz)<input id="y0" class="num" type="number" step="any" placeholder="auto"></label>
 <label>hf max (GHz)<input id="y1" class="num" type="number" step="any" placeholder="auto"></label>
-<div class="checks"><label title="on: blank limits fit the points shown now; off: blank limits fit all rows, so filtering never rescales"><input type="checkbox" id="fit">autoscale to shown points</label></div>
-<button id="reset">Reset</button><button id="csv">Download CSV</button><button id="theme"></button>
+<div class="checks"><label title="on: blank limits fit the points shown now; off: blank limits fit all rows, so filtering never rescales"><input type="checkbox" id="fit" checked>autoscale to shown points</label></div>
+<button id="vreset">Reset view</button><button id="csv">Download CSV</button><button id="theme"></button>
 </div>
-</aside>
-<main>
-<div id="count"></div>
 <div class="plotpane"><div id="plot"></div></div>
 <div id="selbar">The table shows only the <span id="seln"></span> isotopologues selected in the plot. <button id="selclear">Clear selection</button></div>
 <div class="wrap"><table><thead><tr id="hd"></tr></thead><tbody id="tb"></tbody></table></div>
@@ -368,7 +373,8 @@ function render(replot=true){
 $("hd").addEventListener("click",e=>{const k=e.target.dataset.k;if(!k)return;sortDir=k===sortK?-sortDir:1;sortK=k;render();});
 document.querySelectorAll(".controls input,.controls select").forEach(el=>el.addEventListener("input",render));
 $("reset").onclick=()=>{$("q").value="";$("ion").value="";$("r0").value="0.2";$("r1").value="20";$("g1").value="";
- ["asif","norad","fit"].forEach(i=>$(i).checked=false);$("one").checked=true;$("xs").value=$("ys").value="log";["x0","x1","y0","y1"].forEach(i=>$(i).value="");$("terms").querySelectorAll("input").forEach(x=>x.checked=true);$("s2").querySelectorAll("input").forEach(x=>x.checked=true);document.querySelectorAll(".src").forEach(x=>x.value="");sortK="gap";sortDir=1;render();};
+ ["asif","norad"].forEach(i=>$(i).checked=false);$("one").checked=true;$("terms").querySelectorAll("input").forEach(x=>x.checked=true);$("s2").querySelectorAll("input").forEach(x=>x.checked=true);document.querySelectorAll(".src").forEach(x=>x.value="");sortK="gap";sortDir=1;render();};
+$("vreset").onclick=()=>{$("fit").checked=true;$("xs").value=$("ys").value="log";["x0","x1","y0","y1"].forEach(i=>$(i).value="");render();};
 // theme: auto follows the OS; light/dark pin it (stored per browser)
 const THEMES=["auto","light","dark"];let theme="auto";try{theme=localStorage.getItem("theme")||"auto";}catch{}
 function applyTheme(){if(theme==="auto")delete document.documentElement.dataset.theme;else document.documentElement.dataset.theme=theme;
