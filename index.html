@@ -85,14 +85,14 @@ tr:hover td:first-child{background:var(--head)}
 <aside>
 <header>
 <h1>PV candidate survey: diatomic molecules and ions</h1>
-<div class="sub">We survey diatomic molecules and singly charged ions for ground-state structure suited to nuclear-spin-dependent parity-violation (NSD-PV) measurements,
+<div class="sub">We look for diatomic molecules and singly charged ions whose ground state suits nuclear-spin-dependent parity-violation (NSD-PV) measurements,
 where a rotational interval 2B(N+1) nearly matches the hyperfine interval hf = (I+½)|b<sub>F</sub>|. Each row is one isotopologue.
-The gap 2B(N+1) − hf uses the contact term alone, at the N where the two intervals come closest (any N). δ<sub>min</sub> is the smallest zero-field gap, over N ≤ 5,
-between opposite-parity levels of equal F; it uses exact levels where c or γ is known (or S ≥ 1) and the contact term otherwise.
-"As-if-Σ" rows are molecules whose ground state is unknown; their constants assume the unpaired electron occupies a σ orbital. The DFT columns give the
-energies (cm⁻¹) of the other states our DFT calculations found, relative to the DFT state; they are not a ground-state assignment.
-Ground states in <span class="conj">grey italics with ?</span> are estimates by analogy with another molecule, not from a source on this one.</div>
-<div class="sub"><a href="#methods" style="color:var(--acc)">Methods</a> (bottom of the page). Built from b1fe3c0, 2026-11-03.</div>
+The gap 2B(N+1) − hf uses the contact term alone, at the N (any N) where the two intervals come closest. δ<sub>min</sub> is the smallest zero-field gap between
+opposite-parity levels of equal F, over N ≤ 5; it uses exact levels where c or γ is known (or S ≥ 1), and the contact term otherwise.
+"As-if-Σ" rows have an unknown ground state, so their constants assume the unpaired electron occupies a σ orbital. The DFT-state columns give the state our DFT found
+and the energies (cm⁻¹) of the other states, relative to it; they are not a ground-state assignment.
+Ground states in <span class="conj">grey italics with ?</span> are estimated by analogy with another molecule, not taken from a source on this one.</div>
+<div class="sub"><a href="#methods" style="color:var(--acc)">Methods</a> (bottom of the page). Built from c79a09b, 2026-11-03.</div>
 </header>
 <div class="controls">
 <label>Search<input id="q" type="search" placeholder="molecule, term, reference…"></label>
@@ -128,19 +128,26 @@ Ground states in <span class="conj">grey italics with ?</span> are estimates by 
 </div>
 <section id="methods" class="sub" style="max-width:70em;padding:16px;border-top:1px solid var(--line)">
 <h2 style="font-size:16px;color:var(--fg)">Methods</h2>
-<p><b>Constants.</b> Each B and b<sub>F</sub> is labelled by its source: measured; scaled from a measured or a calculated isotopologue of the same molecule; calculated in the literature; our DFT; or our estimate.
-Scaling between isotopologues (reduced mass for B, nuclear g-factor for b<sub>F</sub>) is accurate to the parent value, so a value scaled from a calculation counts as a calculation.
-Our estimates are either rescaled from another molecule of the same charge (approximate) or zero-order, from atomic radii or the free-ion contact interaction (crude).
-When several values exist, we use the most direct one, measured first and estimated last.</p>
+<p><b>Constants.</b> Each B and b<sub>F</sub> carries its source: measured; scaled from a measured or calculated isotopologue of the same molecule; calculated in the literature; our CC; our DFT; or our estimate.
+Scaling between isotopologues (reduced mass for B, nuclear g-factor for b<sub>F</sub>) is as accurate as the parent value, so a value scaled from a calculation counts as a calculation.
+Our estimates either rescale another molecule of the same charge (approximate) or start from atomic radii or the free-ion contact interaction (zero order, crude).
+Where several values exist, we use the most direct: measured first, estimated last.</p>
 <p><b>DFT.</b> We use ORCA 6.1.1 with all-electron scalar-relativistic Hamiltonians.
-An unrestricted Kohn–Sham scan of the bond length gives r<sub>e</sub> and B<sub>e</sub>, and at r<sub>e</sub> an X2C calculation (decontracted x2c-TZVPall-s basis, finite nucleus, picture-change corrected) gives b<sub>F</sub> and c.
+An unrestricted Kohn–Sham scan of the bond length gives r<sub>e</sub> and B<sub>e</sub>; at r<sub>e</sub>, an X2C calculation (decontracted x2c-TZVPall-s basis, finite nucleus, picture-change corrected) gives b<sub>F</sub> and c.
 A DKH2 g-tensor calculation gives Δg<sub>⊥</sub>, and hence γ = −2BΔg<sub>⊥</sub> (Curl relation).
-We chose the functional for each class of molecule (B3LYP, PBE0 with 40% exact exchange, or BP86) by benchmarking against measured molecules, and the b<sub>F</sub> uncertainty is the RMS error of that class.
-These basis sets stop at Rn, so for Ra, Ac and Th we use Dyall's uncontracted all-electron v3z basis instead.</p>
-<p><b>Estimates.</b> Without a measured or calculated value, we estimate the bond length from related molecules of the same charge, scaled by covalent radii (Pyykkö–Atsumi), or from atomic radii alone when no related molecule is known, and b<sub>F</sub> from the Fermi contact interaction of a related molecule or the free ion, scaled to the target nucleus.
-The uncertainties come from leave-one-out tests on molecules with known values; estimates are placeholders until a measurement or calculation exists.</p>
+We chose the functional for each class of molecule (B3LYP, PBE0 with 40% exact exchange, or BP86) by benchmarking against measured molecules.
+The class's RMS error sets the b<sub>F</sub> uncertainty (25% for molecules outside every benchmarked class), and the gap uses at least 20%.
+The x2c basis sets stop at Rn, so for Ra, Ac and Th we use Dyall's uncontracted all-electron v3z basis.</p>
+<p><b>Coupled cluster.</b> For GaCl<sup>+</sup> and GaBr<sup>+</sup>, we also compute b<sub>F</sub> with relativistic coupled cluster (four-component Dirac–Coulomb CCSD(T) in DIRAC 26.1, uncontracted Dyall v2z basis, outer core correlated).
+Finite-field energy differences give A<sub>∥</sub>, and b<sub>F</sub> = A<sub>∥</sub> − 2c/3 with c from our DFT; a CCSD(T) scan of the bond length gives B<sub>0</sub> (first-order Dunham, B<sub>e</sub> − α<sub>e</sub>/2).
+At this level, CC underestimates the measured A<sub>∥</sub> of the isoelectronic neutrals ZnCl and ZnBr by 9–10% (our DFT by 3%), so we scale each cation's A<sub>∥</sub> and B<sub>0</sub> by the measured/CC ratio of its Zn-halide partner.
+The largest uncertainty item is whether that correction carries over from the neutral to the cation, and we set it at half the correction.
+Where a CC value exists, the gap uses it instead of DFT, and the table lists both. CC values appear once these runs finish.</p>
+<p><b>Estimates.</b> Without a measured or calculated value, we estimate the bond length from related molecules of the same charge, scaled by covalent radii (Pyykkö–Atsumi), or from atomic radii alone when no related molecule is known.
+For b<sub>F</sub>, we scale the Fermi contact interaction of a related molecule, or of the free ion, to the target nucleus.
+Leave-one-out tests on molecules with known values set the uncertainties, and the gap uses at least 50% for b<sub>F</sub>. Estimates are placeholders until a measurement or calculation exists.</p>
 <p><b>Levels and crossings.</b> For <sup>2</sup>Σ molecules with enough known constants, we diagonalize the effective Hamiltonian (case (b) basis |N G F M<sub>F</sub>⟩, with γ, b<sub>F</sub>, c and eQq) in magnetic fields up to 200 mT.
-The level plots and crossings show same-M<sub>F</sub>, opposite-parity level pairs whose PV matrix element |⟨a|n·(I×S)|b⟩|/I exceeds 0.02.</p>
+The level plots and crossings show only same-M<sub>F</sub>, opposite-parity pairs whose PV matrix element |⟨a|n·(I×S)|b⟩|/I exceeds 0.02.</p>
 </section>
 <dialog id="dlg"><h2 id="dlgt"></h2><dl id="dlgb"></dl><div id="hp"></div><form method="dialog" style="text-align:right;margin-top:10px"><button>Close</button></form></dialog>
 <script>
