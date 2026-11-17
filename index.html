@@ -97,7 +97,7 @@ Use the Plot selector above the graph to switch between 2B vs (I+½)|b<sub>F</su
 "As-if-Σ" rows have an unknown ground state, so their constants assume the unpaired electron occupies a σ orbital. The DFT-state columns give the state our DFT found
 and the energies (cm⁻¹) of the other states, relative to it; they are not a ground-state assignment.
 Ground states in <span class="conj">grey italics with ?</span> are estimated by analogy with another molecule, not taken from a source on this one.</div>
-<div class="sub"><a href="#methods" style="color:var(--acc)">Methods</a> (bottom of the page). Built from 97adb13, 2026-11-17.</div>
+<div class="sub"><a href="#methods" style="color:var(--acc)">Methods</a> (bottom of the page). Built from 6676d26, 2026-11-17.</div>
 </header>
 <div class="controls">
 <label>Search<input id="q" type="search" placeholder="molecule, term, reference…"></label>
@@ -198,7 +198,7 @@ for(const k in SRC){const o=(v,t)=>`<option value="${v}">${t}</option>`,g=SRC[k]
   `<optgroup label="this work">${Object.entries(g.us).map(([v,t])=>o("="+v,t)).join("")}</optgroup>`+o("=","none");}
 // ground-state terms (survey/site.py terms()); a row with several candidate terms shows if any one is ticked
 const TC={};D.filter(r=>!r.poly).forEach(r=>(r.terms.length?r.terms:["none"]).forEach(t=>TC[t]=(TC[t]||0)+1));
-$("terms").innerHTML=Object.keys(TC).sort((a,b)=>TC[b]-TC[a]).map(t=>`<label><input type="checkbox" value="${t}" checked>${t} <span style="color:var(--mut)">${TC[t]}</span></label>`).join("");
+$("terms").innerHTML=Object.keys(TC).sort((a,b)=>TC[b]-TC[a]).map(t=>`<label><input type="checkbox" value="${t}"${t==="2Σ+"?" checked":""}>${t} <span style="color:var(--mut)">${TC[t]}</span></label>`).join("");
 const setTerms=v=>{$("terms").querySelectorAll("input").forEach(x=>x.checked=v);render();};
 // N selector: dmin, sdmin, N and B_c are set from the per-N data for the ticked pairs, so every later use follows them.
 // A row's dN runs to its own N cut (survey/schema.py ncut), so rows differ in length: a ticked N above a row's cut
